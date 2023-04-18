@@ -10,29 +10,31 @@ const db = require('./db/connection');
 
 const app = express();
 
+// Setup handlebars
 app.engine('hbs', engine({
+  // Enable shortname extensions - ie. index.hbs vs index.handlebars
   extname: '.hbs'
 }));
 app.set('view engine', 'hbs');
+// Set the views folder for all of our handlebar template files
 app.set('views', './views');
 
+// Allow the client to send through json
 app.use(express.json());
+// Allow the client to send through standard form data
 app.use(express.urlencoded({ extended: true }));
 
+// Setup the req.session object for our routes
 app.use(session({
+  // Required to be used to validate the client cookie matches the session secret
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
 
+// Load all of our routes at the root
 app.use('/', [public_routes, auth_routes, private_routes]);
 
 db.sync().then(() => {
   app.listen(PORT, () => console.log('Server started on port %s', PORT))
 });
-
-// const session = {
-
-// }
-
-// session.name = 'JD';
