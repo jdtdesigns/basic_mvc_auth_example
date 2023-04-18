@@ -1,9 +1,9 @@
 const { Sequelize } = require('sequelize');
 
 const connection = new Sequelize(
-  'auth_example_db',
-  'root',
-  '',
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
   {
     host: 'localhost',
     dialect: 'mysql'
