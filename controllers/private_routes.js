@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 /**
 * Custom middleware function that checks if a user
-* is authenticated - they're user id is stored to req.session.user_id
+* is authenticated - check that their user id is stored to req.session.user_id
 */
 function isAuthenticated(req, res, next) {
   if (!req.session.user_id) {
