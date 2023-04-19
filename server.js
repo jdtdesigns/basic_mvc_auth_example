@@ -10,6 +10,8 @@ const db = require('./db/connection');
 
 const app = express();
 
+app.use(express.static('public'));
+
 // Setup handlebars
 app.engine('hbs', engine({
   // Enable shortname extensions - ie. index.hbs vs index.handlebars
@@ -35,6 +37,6 @@ app.use(session({
 // Load all of our routes at the root
 app.use('/', [public_routes, auth_routes, private_routes]);
 
-db.sync().then(() => {
+db.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log('Server started on port %s', PORT))
 });

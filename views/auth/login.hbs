@@ -4,6 +4,9 @@
 
 <!-- Don't forget the "name" attribute - this is used to set a property on the req.body object -->
 <form action="/auth/login" method="POST">
+  {{#each auth_errors}}
+    <p class="auth-error">{{this}}</p>
+  {{/each}}
   <input name="email" type="email" placeholder="Enter your email">
   <input name="password" type="password" placeholder="Enter your password">
   <button>Submit</button>

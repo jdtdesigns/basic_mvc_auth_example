@@ -15,12 +15,16 @@ router.get('/', isLoggedIn, (req, res) => {
 
 // Render the Login Page view
 router.get('/login', isLoggedIn, (req, res) => {
-  res.render('auth/login');
+  res.render('auth/login', {
+    auth_errors: req.session.auth_errors
+  });
 });
 
 // Render the Register Page view
 router.get('/register', isLoggedIn, (req, res) => {
-  res.render('auth/register');
+  res.render('auth/register', {
+    auth_errors: req.session.auth_errors
+  });
 });
 
 module.exports = router;

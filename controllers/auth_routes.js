@@ -14,17 +14,27 @@ router.post('/auth/login', async (req, res) => {
   });
 
   // If no user object is found, we redirect them to the register page
-  if (!user) return res.redirect('/register');
+  if (!user) {
+    // Add auth error to the session
+    req.session.auth_errors = ['No account found with that email address. Please register.'];
+    return res.redirect('/register');
+  }
 
   // Check that the provided password matches the encrypted pass stored in the database
   const valid_pass = await user.validatePass(user_data.password);
 
   // If the password is not a match, we redirect them to the login page
-  if (!valid_pass) return res.redirect('/login');
+  if (!valid_pass) {
+    // Add auth error to the session
+    req.session.auth_errors = ['Your password is incorrect.'];
+    return res.redirect('/login');
+  }
 
   // If they pass our checks, we store their user id to the session and then redirect
   // them to the dashboard
   req.session.user_id = user.id;
+  // Remove all auth errors from the session
+  delete req.session.auth_errors;
 
   res.redirect('/dashboard');
 });
@@ -34,6 +44,9 @@ router.post('/auth/register', async (req, res) => {
   // Form data - email, password
   const user_data = req.body;
 
+  // Clear all previous auth errors
+  delete req.session.auth_errors;
+
   // Try to run this code block - if any of it throws an error, the catch will trigger
   try {
     const user = await User.create(user_data);
@@ -41,11 +54,15 @@ router.post('/auth/register', async (req, res) => {
     // Once the user is created, we store their id to the session
     // and redirect them to the protected dashboard
     req.session.user_id = user.id;
+    delete req.session.auth_errors;
     res.redirect('/dashboard');
   } catch (err) {
+    // Return a new array of just the sequelize error strings
+    const errors = err.errors.map(errObj => errObj.message);
     // If any error is thrown when creating the user
     // we redirect them to the login page
-    res.redirect('/login');
+    req.session.auth_errors = errors;
+    res.redirect('/register');
   }
 });
 

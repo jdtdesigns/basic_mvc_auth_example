@@ -17,10 +17,16 @@ User.init({
   email: {
     type: DataTypes.STRING,
     // Ensure that the email address can only be used once in the table
-    unique: true,
+    unique: {
+      arg: true,
+      msg: 'That email address is already in use.'
+    },
     validate: {
       // Check that the value is a valid email address
-      isEmail: true
+      isEmail: {
+        args: true,
+        msg: 'You must enter a valid email address.'
+      }
     },
     allowNull: false
   },
@@ -28,7 +34,10 @@ User.init({
     type: DataTypes.STRING,
     validate: {
       // Check that the value is at least 6 characters in length
-      len: 6
+      len: {
+        args: 6,
+        msg: 'Your password must be at least 6 characters in length.'
+      }
     },
     allowNull: false
   }
